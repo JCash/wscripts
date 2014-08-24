@@ -26,6 +26,30 @@ def build(bld):
         data = data.replace('@GIT_BRANCH@', branch.strip())
         with open(task.outputs[0].abspath(), 'wb') as f:
             f.write(data)
+
+    bld( features           = 'c cstlib',
+         source             = 'contrib/ConvertUTF/ConvertUTF.c',
+         includes           = 'contrib',
+         export_includes    = 'contrib',
+         target             = 'ConvertUTF')
+    
+    bld( features           = 'cxx cxxstlib',
+         source             = 'contrib/clipper/clipper.cpp',
+         includes           = 'contrib',
+         export_includes    = 'contrib',
+         target             = 'clipper')
+    
+    bld( features           = 'cxx cxxstlib',
+         source             = 'contrib/irrXml/irrXml.cpp',
+         includes           = 'contrib code/BoostWorkaround',
+         export_includes    = 'contrib',
+         target             = 'irrXml')
+    
+    bld( features           = 'cxx cxxstlib',
+         source             = bld.path.ant_glob('contrib/poly2tri/**/*.cc'),
+         includes           = 'contrib/poly2tri',
+         export_includes    = 'contrib/poly2tri',
+         target             = 'poly2tri')
         
     bld(rule    = create_revision,
         source  = bld.path.make_node('revision.h.in'),
@@ -37,7 +61,7 @@ def build(bld):
     b = bld( features           = 'cxx cxxstlib',
              source             = source,
              includes           = 'include code code/BoostWorkaround contrib',
-             use                = 'zlib unzip assimp_revision',
+             use                = 'zlib unzip assimp_revision ConvertUTF clipper irrXml poly2tri',
              export_includes    = 'include',
              target             = 'assimp')
     b.env.CXXFLAGS.append('-Wno-deprecated-register')
