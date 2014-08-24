@@ -1,0 +1,44 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+import subprocess
+
+
+def options(opt):
+    pass
+
+
+def configure(conf):
+    conf.find_program('git', var='GIT')
+
+
+def build(bld):
+    def create_revision(task):
+        with open(task.inputs[0].abspath(), 'rb') as f:
+            data = f.read()
+        cwd = task.inputs[0].parent.abspath()
+        revision = '00000000'
+        branch = 'unknown'
+        if 'GIT' in task.env:
+            revision = subprocess.check_output(['git', 'log', '-1', '--format=%h'], cwd=cwd)
+            branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], cwd=cwd)
+        data = data.replace('@GIT_COMMIT_HASH@', revision.strip())
+        data = data.replace('@GIT_BRANCH@', branch.strip())
+        with open(task.outputs[0].abspath(), 'wb') as f:
+            f.write(data)
+        
+    bld(rule    = create_revision,
+        source  = bld.path.make_node('revision.h.in'),
+        target  = bld.path.get_bld().make_node('revision.h'),
+        export_includes = [bld.path.get_bld().abspath()],
+        name    = 'assimp_revision')
+
+    source = bld.path.ant_glob('code/**/*.cpp')
+    b = bld( features           = 'cxx cxxstlib',
+             source             = source,
+             #defines            = defines,
+             includes           = 'include code code/BoostWorkaround contrib',
+             use                = 'zlib unzip assimp_revision',
+             export_includes    = 'include',
+             target             = 'assimp')
+    b.env.CXXFLAGS.append('-Wno-deprecated-register')
