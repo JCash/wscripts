@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+import sys
+
+def options(opt):
+    pass
+
+
+def configure(conf):
+    pass
+
+
+def build(bld):
+    platform_source = ''
+    if sys.platform == 'win32':
+        platform_source = ' iowin32.c'
+        
+    bld( features           = 'c cstlib',
+         source             = 'ioapi_buf.c ioapi_mem.c ioapi.c unzip.c',
+         includes           = '.',
+         export_includes    = '.',
+         use                = 'zlib',
+         target             = 'unzip')
+    
+    bld( features           = 'c cstlib',
+         source             = 'ioapi_buf.c ioapi_mem.c ioapi.c zip.c',
+         includes           = '.',
+         export_includes    = '.',
+         use                = 'zlib',
+         target             = 'zip')
+    
+    bld( features           = 'c cprogram',
+         source             = 'miniunz.c',
+         includes           = '.',
+         use                = 'unzip',
+         target             = 'miniunz')
+    
+    bld( features           = 'c cprogram',
+         source             = 'minizip.c',
+         includes           = '.',
+         use                = 'zip',
+         target             = 'minizip')
