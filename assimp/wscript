@@ -36,7 +36,6 @@ def build(bld):
     source = bld.path.ant_glob('code/**/*.cpp')
     b = bld( features           = 'cxx cxxstlib',
              source             = source,
-             #defines            = defines,
              includes           = 'include code code/BoostWorkaround contrib',
              use                = 'zlib unzip assimp_revision',
              export_includes    = 'include',
