@@ -13,16 +13,20 @@ def configure(conf):
 
 def build(bld):
     
-    b = bld( features           = 'c cstlib',
+    defines = ['EXCLUDE_PSTDINT']
+    if sys.platform == 'win32':
+        defines = []
+    
+    bld( features           = 'c cstlib',
          source             = bld.path.ant_glob('src/**/*.c'),
-         defines            = ['EXCLUDE_PSTDINT'],
+         defines            = defines,
          includes           = 'include src src/cbstring',
          export_includes    = 'include',
          target             = 'hlslcc')
     
-    b = bld( features           = 'cxx cxxprogram',
+    bld( features           = 'cxx cxxprogram',
          source             = bld.path.ant_glob('offline/*.cpp') + bld.path.ant_glob('offline/cjson/*.c'),
          includes           = 'include offline offline/cjson',
-         defines            = ['EXCLUDE_PSTDINT'],
+         defines            = defines,
          use                = 'hlslcc',
          target             = 'HLSLcc')
