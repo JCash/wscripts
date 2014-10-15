@@ -8,14 +8,17 @@ def options(opt):
 
 
 def configure(conf):
-    pass
+    conf.env.LIB_gdi32 = ['gdi32']
+    conf.env.LIB_user32 = ['user32']
 
 
 def build(bld):
     
     defines = ['EXCLUDE_PSTDINT']
+    libs = []
     if sys.platform == 'win32':
         defines = []
+        libs = ['gdi32', 'user32']
     
     bld( features           = 'c cstlib',
          source             = bld.path.ant_glob('src/**/*.c'),
@@ -28,5 +31,5 @@ def build(bld):
          source             = bld.path.ant_glob('offline/*.cpp') + bld.path.ant_glob('offline/cjson/*.c'),
          includes           = 'include offline offline/cjson',
          defines            = defines,
-         use                = 'hlslcc',
+         use                = ['hlslcc'] + libs,
          target             = 'HLSLcc')
