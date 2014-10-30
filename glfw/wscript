@@ -15,27 +15,23 @@ def configure(conf):
 def build(bld):
     defines = []
     includes = []
-    sourcedir = 'src/'
-    sourcedirfiles = [x for x in os.listdir(sourcedir) if x.endswith('.c')]
+    sourcedirfiles = bld.path.ant_glob('src/**/*.c')
     if sys.platform == 'linux2':
-        platformfiles = [x for x in sourcedirfiles if x.startswith('x11') or x.startswith('xkb') or x.startswith('glx') or x.startswith('linux')]
+        platformfiles = [x for x in sourcedirfiles if x.name.startswith('x11') or x.name.startswith('xkb') or x.name.startswith('glx') or x.name.startswith('linux')]
         includes += ['/usr/include']
         defines = ['_GLFW_X11', '_GLFW_USE_OPENGL']
         
     elif sys.platform == 'darwin':
         sourcedirfiles += [x for x in os.listdir(sourcedir) if x.endswith('.m')]
-        platformfiles = [x for x in sourcedirfiles if x.startswith('cocoa') or x.startswith('nsgl') or x.startswith('iokit') or x.startswith('mach')]
+        platformfiles = [x for x in sourcedirfiles if x.name.startswith('cocoa') or x.name.startswith('nsgl') or x.name.startswith('iokit') or x.name.startswith('mach')]
         defines = ['_GLFW_COCOA', '_GLFW_USE_OPENGL']
         
     elif sys.platform == 'win32':
-        platformfiles = [x for x in sourcedirfiles if x.startswith('win32') or x.startswith('wgl') or x.startswith('winmm')]
+        platformfiles = [x for x in sourcedirfiles if x.name.startswith('win32') or x.name.startswith('wgl') or x.name.startswith('winmm')]
         defines = ['_GLFW_WIN32', '_GLFW_USE_OPENGL', '_GLFW_WGL']
-        
-    commonfiles = ['context.c', 'init.c', 'input.c', 'monitor.c', 'window.c']
-    glfwsource = [os.path.join(sourcedir, x) for x in commonfiles + platformfiles]
     
     glfw = bld.stlib(features  = 'c',
-          source    = glfwsource,
+          source    = ['src/context.c', 'src/init.c', 'src/input.c', 'src/monitor.c', 'src/window.c'] + platformfiles,
           includes = ['include'] + includes,
           export_includes = ['include'],
           defines   = defines,
