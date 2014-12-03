@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-import subprocess
+import sys, subprocess
 
 
 def options(opt):
@@ -64,4 +64,8 @@ def build(bld):
              use                = 'zlib unzip assimp_revision ConvertUTF clipper irrXml poly2tri',
              export_includes    = 'include',
              target             = 'assimp')
-    b.env.CXXFLAGS.append('-Wno-deprecated-register')
+    if sys.platform in ('linux2', 'drawin'):
+        b.env.CXXFLAGS.append('-Wno-deprecated-register')
+    elif sys.platform == 'win32':
+        b.env.CXXFLAGS.append('/EHsc')
+
