@@ -14,11 +14,25 @@ def configure(conf):
 def build(bld):
     projectdir = bld.path.abspath()
     installdir = bld.path.get_bld().abspath()
-    libfile = os.path.join('glbinding', 'lib', 'libglbinding.a')
+    libfile = os.path.join('lib', 'libglbinding.a')
     includedir = os.path.join(installdir, 'include')
     
-    bld(rule="cmake -DOPTION_BUILD_STATIC=ON -DCMAKE_INSTALL_PREFIX:PATH=%s %s && make && make install" % (installdir, projectdir),
+    b = bld(features="cxxstlib",
+        rule="cmake -DOPTION_BUILD_STATIC=ON -DCMAKE_INSTALL_PREFIX:PATH=%s %s && make && make install" % (installdir, projectdir),
         cwd=projectdir,
-        target='libglbinding.a',
+        target=[libfile],
         export_includes=includedir,
         name="glbinding")
+    
+    #installdir = conf.path.get_bld().abspath()
+    #includedir = os.path.join(installdir, 'include')
+    
+    print "GLBINDING"
+    print "GLBINDING", installdir
+    print "GLBINDING", includedir
+    
+    b.env['LIBPATH_glbinding'] = os.path.join(installdir, 'lib')
+    b.env['LIB_glbinding'] = ['glbinding']
+    b.env['INCLUDES_glbinding'] = [os.path.join(includedir, 'include')]#, os.path.join(includedir, 'include', 'glbinding')]
+    b.env['INCLUDES_glbinding_include'] = b.env['INCLUDES_glbinding']
+    
