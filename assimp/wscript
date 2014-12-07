@@ -64,7 +64,7 @@ def build(bld):
              use                = 'zlib unzip assimp_revision ConvertUTF clipper irrXml poly2tri',
              export_includes    = 'include',
              target             = 'assimp')
-    if sys.platform in ('linux2', 'drawin'):
+    if sys.platform in ('linux2', 'darwin'):
         b.env.CXXFLAGS.append('-Wno-deprecated-register')
     elif sys.platform == 'win32':
         b.env.CXXFLAGS.append('/EHsc')
