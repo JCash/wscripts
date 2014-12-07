@@ -24,15 +24,4 @@ def build(bld):
         export_includes=includedir,
         name="glbinding")
     
-    #installdir = conf.path.get_bld().abspath()
-    #includedir = os.path.join(installdir, 'include')
-    
-    print "GLBINDING"
-    print "GLBINDING", installdir
-    print "GLBINDING", includedir
-    
-    b.env['LIBPATH_glbinding'] = os.path.join(installdir, 'lib')
-    b.env['LIB_glbinding'] = ['glbinding']
-    b.env['INCLUDES_glbinding'] = [os.path.join(includedir, 'include')]#, os.path.join(includedir, 'include', 'glbinding')]
-    b.env['INCLUDES_glbinding_include'] = b.env['INCLUDES_glbinding']
     
