@@ -24,6 +24,7 @@ def build(bld):
     elif sys.platform == 'darwin':
         sourcedirfiles += bld.path.ant_glob('src/**/*.m')
         platformfiles = [x for x in sourcedirfiles if x.name.startswith('cocoa') or x.name.startswith('nsgl') or x.name.startswith('iokit') or x.name.startswith('mach')]
+        platformfiles += ['src/posix_tls.c']
         defines = ['_GLFW_COCOA', '_GLFW_NSGL', '_GLFW_USE_OPENGL']
         
     elif sys.platform == 'win32':
