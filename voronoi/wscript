@@ -17,5 +17,6 @@ def build(bld):
           source        = bld.path.ant_glob('source/voronoi/source/**/*.cpp'),
           includes      = 'source/voronoi/include',
           export_includes = 'source/voronoi/include',
+          defines       = ['VORONOI_STATIC'],
           target        = 'voronoi')
 

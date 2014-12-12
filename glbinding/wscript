@@ -1,27 +1,27 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-import os
+import os, sys
 
 def options(opt):
     pass
 
 
 def configure(conf):
-    conf.find_program('cmake')
+    pass
 
-
+    
 def build(bld):
-    projectdir = bld.path.abspath()
-    installdir = bld.path.get_bld().abspath()
-    libfile = os.path.join('lib', 'libglbinding.a')
-    includedir = os.path.join(installdir, 'include')
-    
-    b = bld(features="cxxstlib",
-        rule="cmake -DOPTION_BUILD_STATIC=ON -DCMAKE_INSTALL_PREFIX:PATH=%s %s && make && make install" % (installdir, projectdir),
-        cwd=projectdir,
-        target=[libfile],
-        export_includes=includedir,
-        name="glbinding")
-    
+
+    defines = ['GLBINDING_STATIC']
+    if sys.platform == 'win32':
+        defines += ['WIN32']
+        
+    bld(features="cxxstlib cxx",
+        source=bld.path.ant_glob('source/glbinding/source/**/*.cpp'),
+        includes='source/glbinding/include',
+        export_includes='source/glbinding/include',
+        defines=defines,
+        target='glbinding')
+
     
