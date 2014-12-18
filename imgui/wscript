@@ -13,28 +13,10 @@ def configure(conf):
 
 
 def build(bld):
-    defines = []
-    includes = []
-    sourcedirfiles = bld.path.ant_glob('src/**/*.c')
-    if sys.platform == 'linux2':
-        platformfiles = [x for x in sourcedirfiles if x.name.startswith('x11') or x.name.startswith('xkb') or x.name.startswith('glx') or x.name.startswith('linux')]
-        includes += ['/usr/include']
-        defines = ['_GLFW_X11', '_GLFW_USE_OPENGL']
-        
-    elif sys.platform == 'darwin':
-        sourcedirfiles += bld.path.ant_glob('src/**/*.m')
-        platformfiles = [x for x in sourcedirfiles if x.name.startswith('cocoa') or x.name.startswith('nsgl') or x.name.startswith('iokit') or x.name.startswith('mach')]
-        platformfiles += ['src/posix_tls.c']
-        defines = ['_GLFW_COCOA', '_GLFW_NSGL', '_GLFW_USE_OPENGL']
-        
-    elif sys.platform == 'win32':
-        platformfiles = [x for x in sourcedirfiles if x.name.startswith('win32') or x.name.startswith('wgl') or x.name.startswith('winmm')]
-        defines = ['_GLFW_WIN32', '_GLFW_USE_OPENGL', '_GLFW_WGL']
     
     bld.stlib(features  = 'cxx',
           source    = ['imgui.cpp'],
           includes = '.',
           export_includes = ['.'],
-          defines   = defines,
           target    = 'imgui')
 
